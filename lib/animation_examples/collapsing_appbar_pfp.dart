@@ -57,10 +57,14 @@ class CustomSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    //LayoutBuilder to give us constraints
     return LayoutBuilder(
       builder: (context, constraint) {
+        //SingleChildScrollView to avoid render overflow errors
         return SingleChildScrollView(
           physics: const NeverScrollableScrollPhysics(),
+          //ConstrainedBox and IntrinsicHeight allow us to use Expanded widget 
+          //inside a SingleChildScrollView
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: constraint.maxHeight),
             child: IntrinsicHeight(
@@ -109,20 +113,21 @@ class CustomSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                                       shape: BoxShape.circle,
                                       color: kPrimaryColor,
                                       image: const DecorationImage(
-                                        image: NetworkImage(
-                                            'https://pixy.org/src/477/4773331.png'),
+                                        image: NetworkImage('https://pixy.org/src/477/4773331.png'),
                                         fit: BoxFit.cover,
                                       ),
                                       border: Border.all(
                                         color: kPrimaryColor,
                                         width: 3.0,
-                                      )),
-                                )
+                                      ),
+                                    ),
+                                ),
                               ],
                             ),
                           ),
                         ),
-                      )),
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -158,8 +163,11 @@ class ExpandedAppBar extends StatelessWidget {
   final double expandedHeight;
   final double width;
   
-  
+  //by heightAbovePfp we mean the height above the bottom most point of 
+  //the pfp and similar for heightBelowPfp
+
   double get heightAbovePfp {
+    //toolbar height + sized box height + diameter
     return kToolbarHeight + 10 + expandedPfpDiameter;
   }
 
@@ -222,6 +230,9 @@ class ExpandedAppBar extends StatelessWidget {
           ),
           Transform.translate(
             offset: Offset(getXOffset(),-1*getYOffset(),),
+            //SizedBox and Align enables us to keep the bottom most point
+            //of the pfp in contact with the collapsing app bar (after 
+            // isUserPfpCollapsing() is true)
             child: SizedBox(
               width: expandedPfpDiameter,
               height: expandedPfpDiameter,
